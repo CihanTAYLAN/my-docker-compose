@@ -1,2 +1,7 @@
-# my-docker-compose
-Docker-compose.yml for development tools
+# My docker-compose.yml
+Docker-compose.yml file for development tools
+-PostgreSQL
+- MySQL
+- Redis
+- MongoDB
+- Kafka
