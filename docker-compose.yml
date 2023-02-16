@@ -1,0 +1,114 @@
+version: '3.8'
+services:
+  postgres:
+    image: docker.io/postgres:14.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data
+  mysql:
+    image: docker.io/mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-vol:/var/lib/mysql
+  mongodb:
+    image: docker.io/mongo:6.0
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data-vol:/data/db
+      - mongo-config-vol:/data/configdb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+  redis:
+    image: docker.io/bitnami/redis:latest
+    restart: always
+    environment:
+      REDIS_PASSWORD: redis
+    ports:
+      - 6379:6379
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.8
+    restart: always
+    ports:
+      - 2181:2181
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: yes
+    volumes:
+      - zookeeper-data-vol:/bitnami/zookeeper
+  kafka:
+    image: docker.io/bitnami/kafka:3.4
+    restart: always
+    ports:
+      - 9092:9092
+    volumes:
+      - kafka-data-vol:/bitnami/kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: yes
+    depends_on:
+      - zookeeper
+  krakend:
+    image: docker.io/devopsfaith/krakend
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - krakend-data-vol:/etc/krakend
+
+volumes:
+  postgres-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/postgres'
+  mysql-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/mysql'
+  mongo-data-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/mongo/db'
+  mongo-config-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/mongo/configdb'
+  zookeeper-data-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/zookeeper'
+  kafka-data-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/kafka'
+  krakend-data-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/krakend'
