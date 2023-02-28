@@ -4,4 +4,5 @@ Docker-compose.yml file for development tools
 - MySQL
 - Redis
 - MongoDB
+- Zookeeper
 - Kafka
