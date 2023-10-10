@@ -11,14 +11,14 @@ services:
     volumes:
       - postgres-vol:/var/lib/postgresql/data
   mssql:
-    image: 'mcr.microsoft.com/mssql/server'
+    image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
         - '1433:1433'
     environment:
         ACCEPT_EULA: Y
-        SA_PASSWORD: mssql
+        MSSQL_SA_PASSWORD: mssql_secure_password
     volumes:
-        - mssql-vol:/var/opt/mssql
+        - mssql-vol:/var/opt/mssql/data
   mysql:
     image: docker.io/mysql:5.7
     restart: always
@@ -85,6 +85,12 @@ volumes:
       type: 'none'
       o: 'bind'
       device: '~/workspace/docker-data/postgres'
+  mssql-vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '~/workspace/docker-data/mssql'
   mysql-vol:
     driver: local
     driver_opts:
